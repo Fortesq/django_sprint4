@@ -1,7 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.urls import reverse
 from django.db import models
-from django.utils import timezone
 
 
 User = get_user_model()
@@ -24,7 +22,7 @@ class Location(PublishedModels):
     name = models.CharField(
         max_length=MAX_TITLE_LENGTH,
         verbose_name='Название места')
-    
+
     def __str__(self):
         return self.name
 
@@ -43,6 +41,7 @@ class Category(PublishedModels):
             'Идентификатор страницы для URL; '
             'разрешены символы латиницы, цифры, дефис и подчёркивание.')
     )
+
     def __str__(self):
         return self.title
 
@@ -76,18 +75,17 @@ class Post(PublishedModels):
         upload_to='posts_images',
         blank=True
     )
-  
+
     class Meta:
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
         ordering = ["-pub_date"]
 
 
-
 class Comment(models.Model):
     text = models.TextField('Текст комментария')
     post = models.ForeignKey(
-        Post, 
+        Post,
         on_delete=models.CASCADE,
         related_name='comments',
         null=True,

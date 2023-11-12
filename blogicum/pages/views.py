@@ -6,11 +6,14 @@ handler404 = 'pages.views.page_not_found'
 handler403 = 'pages.views.csrf_failure'
 handler500 = 'pages.views.server_error'
 
+
 class RulesView(TemplateView):
     template_name = 'pages/rules.html'
 
+
 class AboutPage(TemplateView):
     template_name = 'pages/about.html'
+
 
 def page_not_found(request, exception):
     return render(request, 'pages/404.html', status=404)
