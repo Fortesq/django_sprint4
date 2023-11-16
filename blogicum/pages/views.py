@@ -2,11 +2,6 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 
-handler404 = 'pages.views.page_not_found'
-handler403 = 'pages.views.csrf_failure'
-handler500 = 'pages.views.server_error'
-
-
 class RulesView(TemplateView):
     template_name = 'pages/rules.html'
 
