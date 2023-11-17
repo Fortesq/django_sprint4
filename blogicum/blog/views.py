@@ -2,7 +2,7 @@ from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.http import Http404
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
 from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
@@ -15,16 +15,13 @@ from .queryset import get_posts_queryset
 
 
 class PostsListView(ListView):
-    queryset = get_posts_queryset()
+    queryset = get_posts_queryset(
+        apply_filters=True,
+        apply_annotation=True
+    )
     template_name = 'blog/index.html'
     paginate_by = settings.PAGINATE_ON_PAGE
     ordering = '-pub_date'
-
-    def get_queryset(self):
-        return get_posts_queryset(
-            apply_filters=True,
-            apply_annotation=True
-        )
 
 
 class PostDetailView(DetailView):
@@ -109,11 +106,11 @@ class PostUpdateView(LoginRequiredMixin, PostMixin, UpdateView):
 class PostDeleteView(LoginRequiredMixin, PostMixin, DeleteView):
     success_url = reverse_lazy('blog:index')
 
-    def dispatch(self, request, *args, **kwargs):
-        instance = self.get_object()
-        if instance.author != request.user:
-            return redirect('blog:post_detail', post_id=instance.pk)
-        return super().dispatch(request, *args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['form'] = self.get_form()
+        context['form'].instance = self.get_object()
+        return context
 
 
 class CommentCreateView(LoginRequiredMixin, CreateView):
