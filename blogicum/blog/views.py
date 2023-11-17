@@ -11,18 +11,17 @@ from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
 from .forms import CommentForm, PostForm, ProfileForm
 from .mixins import CommentMixin, PostMixin
 from .models import Category, Comment, Post
-from .utils import get_posts_queryset
+from .queryset import get_posts_queryset
 
 
 class PostsListView(ListView):
-    model = Post
+    queryset = get_posts_queryset()
     template_name = 'blog/index.html'
     paginate_by = settings.PAGINATE_ON_PAGE
     ordering = '-pub_date'
 
     def get_queryset(self):
         return get_posts_queryset(
-            manager=Post.objects,
             apply_filters=True,
             apply_annotation=True
         )
@@ -74,7 +73,6 @@ class CategoryPosts(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'blog/category.html'
     slug_url_kwarg = 'category_slug'
-    category = None
     paginate_by = settings.PAGINATE_ON_PAGE
 
     def get_object(self):
@@ -110,12 +108,6 @@ class PostUpdateView(LoginRequiredMixin, PostMixin, UpdateView):
 
 class PostDeleteView(LoginRequiredMixin, PostMixin, DeleteView):
     success_url = reverse_lazy('blog:index')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['form'] = self.get_form()
-        context['form'].instance = self.get_object()
-        return context
 
     def dispatch(self, request, *args, **kwargs):
         instance = self.get_object()

@@ -26,7 +26,7 @@ class CommentMixin:
     def dispatch(self, request, *args, **kwargs):
         instance = get_object_or_404(
             Comment,
-            pk=self.kwargs['comment_id'],
+            pk=self.kwargs[self.pk_url_kwarg],
             post__id=self.kwargs['post_id']
         )
         if instance.author != request.user:
