@@ -6,7 +6,6 @@ from .models import Post
 
 def get_posts_queryset(
         manager=Post.objects,
-        apply_select_related=True,
         apply_filters=False,
         apply_annotation=False
 ):

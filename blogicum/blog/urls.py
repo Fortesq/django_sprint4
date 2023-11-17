@@ -26,7 +26,6 @@ post_urls = [
 
 urlpatterns = [
     path('', views.PostsListView.as_view(), name='index'),
-    path('login_only/', views.simple_view),
     path('posts/', include(post_urls)),
     path(
         'category/<slug:category_slug>/',
@@ -35,6 +34,6 @@ urlpatterns = [
         'profile/<str:username>/',
         views.ProfileListView.as_view(), name='profile'),
     path(
-        'edit_profile/<str:username>/',
+        'edit_profile/',
         views.ProfileUpdateView.as_view(), name='edit_profile'),
 ]
